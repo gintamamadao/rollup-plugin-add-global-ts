@@ -1,7 +1,7 @@
 {
   "name": "rollup-plugin-add-global-ts",
   "version": "0.0.1",
-  "description": " add globally declared d.ts files content to the compiled d.ts file",
+  "description": "add globally declared d.ts files content to the compiled d.ts file",
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
   "files": [
