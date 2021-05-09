@@ -5,7 +5,6 @@ import { dirname } from 'path'
 import shelljs from 'shelljs'
 export interface IOptions {
   declareFiles?: string[]
-  [p: string]: any
 }
 
 const readFile = (filePath: string) => {
@@ -25,36 +24,31 @@ const writeFile = (filePath: string, content: string) => {
   writeFileSync(filePath, content)
 }
 
-export default function addDts(options: IOptions = {}): Plugin {
+export default function addDts(options: IOptions | string[] = {}): Plugin {
   return {
     name: 'rollup-plugin-add-global-ts',
-    writeBundle() {
-      const output = Array.isArray(options.output)
-        ? options.output[0]
-        : options.output
-      const declareFiles = options.declareFiles || [
-        'typings.d.ts',
-        'src/typings.d.ts',
-      ]
-      const outDir = dirname(output.file)
+    writeBundle(api) {
+      const outputFile = api.file
+      const outDir = dirname(outputFile)
+      const declareFiles = Array.isArray(options)
+        ? options
+        : options.declareFiles || ['typings.d.ts', 'src/typings.d.ts']
       const addDtsCnt = (outDir: string, dtsFile: string) => {
         const cntStr = readFile(dtsFile)
-        glob(
-          `+(${outDir}/*.d.ts|${outDir}/**/*.d.ts)`,
-          {},
-          function (err, files) {
-            if (err) {
-              console.log(err)
-              return
-            }
-            console.log(files, 'files')
-            files.forEach((file) => {
-              const dtsCont = readFile(file)
-              const newCont = `${cntStr}\r\n${dtsCont}`
-              writeFile(file, newCont)
-            })
+        if (!cntStr) {
+          return
+        }
+        glob(`${outDir}/**/*.d.ts`, {}, function (err, files) {
+          if (err) {
+            console.log(err)
+            return
           }
-        )
+          files.forEach((file) => {
+            const dtsCont = readFile(file)
+            const newCont = `${cntStr}\r\n${dtsCont}`
+            writeFile(file, newCont)
+          })
+        })
       }
 
       for (const itFile of declareFiles) {

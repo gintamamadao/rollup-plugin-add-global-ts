@@ -1,7 +1,7 @@
 {
   "name": "rollup-plugin-add-global-ts",
   "version": "0.0.1",
-  "description": "全局类型声明的 d.ts 文件添加到编译后的类型文件中",
+  "description": " add globally declared d.ts files content to the compiled d.ts file",
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
   "files": [
