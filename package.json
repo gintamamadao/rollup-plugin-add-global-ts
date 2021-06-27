@@ -1,6 +1,6 @@
 {
   "name": "rollup-plugin-add-global-ts",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "add globally declared d.ts files content to the compiled d.ts file",
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
@@ -24,12 +24,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/gintamamadao/gin-libs.git"
+    "url": "git+https://github.com/gintamamadao/rollup-plugin-add-global-ts.git"
   },
   "bugs": {
-    "url": "https://github.com/gintamamadao/gin-libs/issues"
+    "url": "https://github.com/gintamamadao/rollup-plugin-add-global-ts/issues"
   },
-  "homepage": "https://github.com/gintamamadao/gin-libs/#readme",
+  "homepage": "https://github.com/gintamamadao/rollup-plugin-add-global-ts/#readme",
   "devDependencies": {
     "@babel/core": "^7.11.0",
     "@babel/plugin-transform-runtime": "^7.11.5",
