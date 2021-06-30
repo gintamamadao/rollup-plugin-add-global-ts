@@ -57,10 +57,10 @@ export default function addDts(options: IOptions | string[] = {}): Plugin {
             return
           }
           files.forEach((file) => {
-            const exFilePath = relative(
-              resolve(file, '..'),
-              `./lib/${FILE_NAME}`
-            )
+            let exFilePath = relative(resolve(file, '..'), `./lib/${FILE_NAME}`)
+            if (!exFilePath.startsWith('./') && exFilePath.startsWith('../')) {
+              exFilePath = `./${exFilePath}`
+            }
             cache.write(exFilePath, 'exFilePath')
             const dtsCont = readFile(file)
             const newCont = `${genImportItems(
