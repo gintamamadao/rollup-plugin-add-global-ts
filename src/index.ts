@@ -68,7 +68,7 @@ export default function addDts(options: IOptions | string[] = {}): Plugin {
             if (file.includes(FILE_NAME)) {
               return
             }
-            cache.write(exFilePath, 'exFilePath')
+            // cache.write(exFilePath, 'exFilePath')
             const dtsCont = readFile(file)
             const newCont = `${genImportItems(
               exIdNames,
