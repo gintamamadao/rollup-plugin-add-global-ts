@@ -1,8 +1,13 @@
 import { Plugin } from 'rollup'
 import { glob } from 'glob'
 import { existsSync, readFileSync, writeFileSync } from 'fs'
-import { dirname } from 'path'
+import { dirname, relative, join, resolve } from 'path'
 import shelljs from 'shelljs'
+import parser from '@babel/parser'
+import traverse from '@babel/traverse'
+import generate from '@babel/generator'
+import cache from 'ginlibs-cache'
+import fsUtil from 'ginlibs-file-util'
 export interface IOptions {
   declareFiles?: string[]
 }
@@ -24,6 +29,17 @@ const writeFile = (filePath: string, content: string) => {
   writeFileSync(filePath, content)
 }
 
+const getAstNodeIdName = (node: any) => {
+  return node?.id?.name
+}
+
+const DTS_EXT = '.d.ts'
+const FILE_NAME = '@@plugin_global'
+
+const genImportItems = (exportItems: string[], path: string) => {
+  return `import { ${exportItems.join(', ')} } from '${path}'`
+}
+
 export default function addDts(options: IOptions | string[] = {}): Plugin {
   return {
     name: 'rollup-plugin-add-global-ts',
@@ -33,27 +49,60 @@ export default function addDts(options: IOptions | string[] = {}): Plugin {
       const declareFiles = Array.isArray(options)
         ? options
         : options.declareFiles || ['typings.d.ts', 'src/typings.d.ts']
-      const addDtsCnt = (outDir: string, dtsFile: string) => {
-        const cntStr = readFile(dtsFile)
-        if (!cntStr) {
-          return
-        }
+
+      const addDtsCnt = (exIdNames: string[]) => {
         glob(`${outDir}/**/*.d.ts`, {}, function (err, files) {
           if (err) {
             console.log(err)
             return
           }
           files.forEach((file) => {
+            const exFilePath = relative(
+              resolve(file, '..'),
+              `./lib/${FILE_NAME}`
+            )
+            cache.write(exFilePath, 'exFilePath')
             const dtsCont = readFile(file)
-            const newCont = `${cntStr}\r\n${dtsCont}`
+            const newCont = `${genImportItems(
+              exIdNames,
+              exFilePath
+            )}\r\n${dtsCont}`
             writeFile(file, newCont)
           })
         })
       }
-
+      const exportItems = []
+      const itIdNames = []
       for (const itFile of declareFiles) {
-        addDtsCnt(outDir, itFile)
+        const itCntStr = readFile(itFile)
+        if (!itCntStr) {
+          return
+        }
+        const ast = parser.parse(itCntStr, {
+          sourceType: 'module',
+          plugins: ['typescript'],
+        })
+
+        traverse(ast as any, {
+          TSTypeAliasDeclaration(path) {
+            const node = path.node
+            const nodeOutput = generate(node as any)
+            itIdNames.push(getAstNodeIdName(node))
+            exportItems.push(`export ${nodeOutput.code}`)
+          },
+          TSInterfaceDeclaration(path) {
+            const node = path.node
+            const nodeOutput = generate(node as any)
+            itIdNames.push(getAstNodeIdName(node))
+            exportItems.push(`export ${nodeOutput.code}`)
+          },
+        })
       }
+      addDtsCnt(itIdNames)
+      fsUtil.write(
+        `${join(outDir, FILE_NAME)}${DTS_EXT}`,
+        exportItems.join('\n')
+      )
     },
   }
 }
