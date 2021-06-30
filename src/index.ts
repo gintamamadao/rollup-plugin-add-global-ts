@@ -58,8 +58,15 @@ export default function addDts(options: IOptions | string[] = {}): Plugin {
           }
           files.forEach((file) => {
             let exFilePath = relative(resolve(file, '..'), `./lib/${FILE_NAME}`)
-            if (!exFilePath.startsWith('./') && !exFilePath.startsWith('../')) {
+            if (
+              !exFilePath.startsWith('/') &&
+              !exFilePath.startsWith('./') &&
+              !exFilePath.startsWith('../')
+            ) {
               exFilePath = `./${exFilePath}`
+            }
+            if (file.includes(FILE_NAME)) {
+              return
             }
             cache.write(exFilePath, 'exFilePath')
             const dtsCont = readFile(file)
