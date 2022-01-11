@@ -1,4 +1,4 @@
-English | [简体中文](./README.zh-CN.md)
+[English](./README.md) | 简体中文
 
 # rollup-plugin-add-global-ts
 
@@ -6,9 +6,9 @@ English | [简体中文](./README.zh-CN.md)
 [![NPM Weekly Downloads](https://badgen.net/npm/dw/rollup-plugin-add-global-ts)](https://www.npmjs.com/package/rollup-plugin-add-global-ts)
 [![License](https://badgen.net/npm/license/rollup-plugin-add-global-ts)](https://www.npmjs.com/package/rollup-plugin-add-global-ts)
 
-> typescript will not add the types in the global declarations of the project to the compiled declaration file when it is compiled, so that projects with global declarations lose some of their declarations when they are compiled, which may result in errors when other projects refer to them.
+> typescript 编译的时候不会把项目中的全局声明中的类型加到编译后的声明文件中，这样有全局声明的项目编译后就丢失了部分声明，导致其他项目引用的时候可能会报错。
 
-> This plugin adds the contents of the globally declared d.ts file to the compiled d.ts file at the end of the rollup compilation
+> 本插件是在 rollup 编译的最后把全局声明的 d.ts 文件的内容添加到编译后的 d.ts 文件中
 
 ## Example
 
@@ -17,7 +17,7 @@ import addGlobalTs from 'rollup-plugin-add-global-ts'
 
 export default [
   {
-    // pass in an array of corresponding d.ts file paths to the function addGlobalTs
+    // addGlobalTs 传入对应的 d.ts 文件路径的数组
     plugins: [addGlobalTs(['src/typings.d.ts'])],
   },
 ]
