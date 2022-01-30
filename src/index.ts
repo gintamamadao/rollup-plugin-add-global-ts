@@ -6,7 +6,6 @@ import shelljs from 'shelljs'
 import parser from '@babel/parser'
 import traverse from '@babel/traverse'
 import generate from '@babel/generator'
-import cache from 'ginlibs-cache'
 import fsUtil from 'ginlibs-file-util'
 export interface IOptions {
   declareFiles?: string[]
