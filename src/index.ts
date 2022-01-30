@@ -34,7 +34,7 @@ const getAstNodeIdName = (node: any) => {
 }
 
 const DTS_EXT = '.d.ts'
-const FILE_NAME = '@@plugin_global'
+const FILE_NAME = 'rollup-plugin-add-global-ts_@global'
 
 const genImportItems = (exportItems: string[], path: string) => {
   return `import { ${exportItems.join(', ')} } from '${path}'`
