@@ -18,7 +18,10 @@ const babelOpt = {
 export default [
   {
     input: 'src/index.ts',
-    external: Object.keys(pkg.dependencies || {}),
+    external: [].concat(
+      Object.keys(pkg.dependencies || {}),
+      Object.keys(pkg.peerDependencies || {})
+    ),
     output: [{ file: pkg.main, format: 'cjs' }],
     plugins: [json(), typescript(), resolve(), commonjs(), babel(babelOpt)],
   },
