@@ -9,6 +9,7 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "noImplicitThis": false,
+    "types": ["node"],
     "lib": ["es5", "es6", "dom", "es7", "esnext"],
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true
